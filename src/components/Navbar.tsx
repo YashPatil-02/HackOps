@@ -205,56 +205,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
 
                 <div className="space-y-1">
-                  <button
-                    onClick={() => handleSwitchUser('citizen@ecosentinel.demo')}
-                    className={`w-full flex items-center justify-between p-2 rounded-lg text-left text-xs transition-colors ${
-                      currentUser?.email === 'citizen@ecosentinel.demo'
-                        ? 'bg-emerald-100/60 font-semibold text-emerald-950'
-                        : 'hover:bg-slate-50 text-slate-700'
-                    }`}
+                  <div
+                    className="w-full flex items-center justify-between p-2 rounded-lg text-left text-xs bg-emerald-100/60 font-semibold text-emerald-950"
                   >
                     <div>
-                      <div className="font-medium">Ananya Sharma</div>
-                      <div className="text-[10px] text-slate-500">citizen@ecosentinel.demo (Citizen)</div>
+                      <div className="font-bold text-emerald-950">Inspector Rajesh Deshmukh</div>
+                      <div className="text-[10px] text-emerald-800">officer@ecosentinel.demo · Enforcement Wing</div>
+                      <div className="text-[10px] text-slate-500 font-mono mt-0.5">ID: user-officer-01</div>
                     </div>
-                    {currentUser?.email === 'citizen@ecosentinel.demo' && (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                    )}
-                  </button>
-
-                  <button
-                    onClick={() => handleSwitchUser('officer@ecosentinel.demo')}
-                    className={`w-full flex items-center justify-between p-2 rounded-lg text-left text-xs transition-colors ${
-                      currentUser?.email === 'officer@ecosentinel.demo'
-                        ? 'bg-emerald-100/60 font-semibold text-emerald-950'
-                        : 'hover:bg-slate-50 text-slate-700'
-                    }`}
-                  >
-                    <div>
-                      <div className="font-medium">Inspector Rajesh Deshmukh</div>
-                      <div className="text-[10px] text-slate-500">officer@ecosentinel.demo (Officer)</div>
-                    </div>
-                    {currentUser?.email === 'officer@ecosentinel.demo' && (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                    )}
-                  </button>
-
-                  <button
-                    onClick={() => handleSwitchUser('admin@ecosentinel.demo')}
-                    className={`w-full flex items-center justify-between p-2 rounded-lg text-left text-xs transition-colors ${
-                      currentUser?.email === 'admin@ecosentinel.demo'
-                        ? 'bg-emerald-100/60 font-semibold text-emerald-950'
-                        : 'hover:bg-slate-50 text-slate-700'
-                    }`}
-                  >
-                    <div>
-                      <div className="font-medium">Dr. Sunita Kulkarni</div>
-                      <div className="text-[10px] text-slate-500">admin@ecosentinel.demo (Admin)</div>
-                    </div>
-                    {currentUser?.email === 'admin@ecosentinel.demo' && (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                    )}
-                  </button>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                  </div>
                 </div>
 
                 <div className="mt-2 pt-2 border-t border-slate-100">

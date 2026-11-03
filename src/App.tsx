@@ -71,15 +71,17 @@ export function App() {
           </span>
         </div>
       )}
-      {/* Top Navbar with Role Switcher, Nav Links, Notifications */}
-      <Navbar
-        currentUser={currentUser}
-        onUserChange={handleUserChange}
-        currentView={currentView}
-        onNavigate={(view) => setCurrentView(view)}
-        onOpenAIChat={() => setIsAIChatOpen(true)}
-        onOpenReportModal={() => setIsReportModalOpen(true)}
-      />
+      {/* Top Navbar with Role Switcher, Nav Links, Notifications (for dashboard views) */}
+      {currentView !== 'landing' && (
+        <Navbar
+          currentUser={currentUser}
+          onUserChange={handleUserChange}
+          currentView={currentView}
+          onNavigate={(view) => setCurrentView(view)}
+          onOpenAIChat={() => setIsAIChatOpen(true)}
+          onOpenReportModal={() => setIsReportModalOpen(true)}
+        />
+      )}
 
       {/* Main View Router */}
       <main className="flex-1">
@@ -88,7 +90,10 @@ export function App() {
             onNavigate={(view) => setCurrentView(view)}
             onOpenReportModal={() => setIsReportModalOpen(true)}
             onOpenAIChat={() => setIsAIChatOpen(true)}
+            onSelectIncident={handleIncidentSelected}
             currentUser={currentUser}
+            onUserChange={handleUserChange}
+            key={`landing-${refreshTrigger}`}
           />
         )}
 

@@ -53,16 +53,54 @@ class DatabaseService {
   private async initSqlDatabase() {
     try {
       // Check if Cloud SQL is reachable and has data
-      const existing = await sqlDb.select({ id: schema.incidents.id }).from(schema.incidents).limit(1);
+      const sqlIncidents = await sqlDb.select().from(schema.incidents);
       this.sqlReady = true;
-      if (existing.length === 0) {
+      if (sqlIncidents.length === 0) {
         console.log('[Cloud SQL] Database empty, seeding records into PostgreSQL...');
+        if (this.data.incidents.length === 0) {
+          this.data.incidents = JSON.parse(JSON.stringify(INITIAL_INCIDENTS));
+          this.persist();
+        }
         await this.syncAllToSql();
       } else {
-        console.log('[Cloud SQL] Connected to PostgreSQL instance with active records.');
+        console.log(`[Cloud SQL] Connected to PostgreSQL instance with ${sqlIncidents.length} active records.`);
+        // Map SQL records to in-memory incidents
+        this.data.incidents = sqlIncidents.map((row: any) => ({
+          id: row.id,
+          title: row.title,
+          description: row.description,
+          category: row.category as any,
+          pollutionType: row.pollutionType || '',
+          medium: (row.medium || 'air') as any,
+          location: row.location,
+          region: row.region,
+          latitude: Number(row.latitude),
+          longitude: Number(row.longitude),
+          severityObserved: (row.severityObserved || 'Moderate') as any,
+          reporterId: row.reporterId,
+          reporterName: row.reporterName,
+          reporterEmail: row.reporterEmail || '',
+          contactPreference: row.contactPreference || '',
+          status: (row.status || 'Submitted') as any,
+          riskScore: row.riskScore || 50,
+          riskLevel: (row.riskLevel || 'Moderate') as any,
+          evidenceUrl: row.evidenceUrl || undefined,
+          evidenceName: row.evidenceName || undefined,
+          aiAnalysis: row.aiAnalysis ? JSON.parse(row.aiAnalysis) : undefined,
+          followUpComments: row.followUpComments ? JSON.parse(row.followUpComments) : undefined,
+          assignedOfficerId: row.assignedOfficerId || undefined,
+          assignedOfficerName: row.assignedOfficerName || undefined,
+          reportedAt: row.reportedAt,
+          updatedAt: row.updatedAt,
+        }));
+        this.persist();
       }
     } catch (err) {
       console.warn('[Cloud SQL] SQL sync deferred (pool initializing or local mode):', err);
+      if (this.data.incidents.length === 0) {
+        this.data.incidents = JSON.parse(JSON.stringify(INITIAL_INCIDENTS));
+        this.persist();
+      }
     }
   }
 
@@ -132,6 +170,11 @@ class DatabaseService {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
         const parsed = JSON.parse(raw);
         if (parsed.users) {
+          parsed.users = JSON.parse(JSON.stringify(INITIAL_USERS));
+          parsed.anomalies = JSON.parse(JSON.stringify(INITIAL_ANOMALIES));
+          parsed.observations = JSON.parse(JSON.stringify(INITIAL_OBSERVATIONS));
+          parsed.inspections = JSON.parse(JSON.stringify(INITIAL_INSPECTIONS));
+          parsed.actions = JSON.parse(JSON.stringify(INITIAL_CORRECTIVE_ACTIONS));
           return parsed;
         }
       }

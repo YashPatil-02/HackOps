@@ -1106,12 +1106,6 @@ export const OfficerDashboard: React.FC<OfficerDashboardProps> = ({
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={handlePrint}
-                  className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-2xs hover:bg-slate-50"
-                >
-                  <Printer className="w-3.5 h-3.5" /> Print Protocols
-                </button>
-                <button
                   onClick={() => setShowNewInspModal(true)}
                   className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5"
                 >
@@ -1442,16 +1436,10 @@ export const OfficerDashboard: React.FC<OfficerDashboardProps> = ({
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={handlePrint}
+                  onClick={handleExportCSV}
                   className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5"
                 >
-                  <Printer className="w-4 h-4" /> Print / Save as PDF
-                </button>
-                <button
-                  onClick={handleExportCSV}
-                  className="px-4 py-2 bg-white border border-slate-200 text-slate-800 text-xs font-semibold rounded-xl hover:bg-slate-50 flex items-center gap-1.5"
-                >
-                  <FileDown className="w-4 h-4 text-emerald-700" /> Export CSV Data
+                  <FileDown className="w-4 h-4 text-emerald-200" /> Export CSV Data
                 </button>
               </div>
             </div>

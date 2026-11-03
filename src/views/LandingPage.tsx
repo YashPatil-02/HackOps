@@ -1,425 +1,229 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  ShieldAlert,
-  MapPin,
   Sparkles,
-  Scale,
-  ArrowRight,
-  Activity,
+  RefreshCw,
+  UserCheck,
+  Plus,
+  Bot,
   Layers,
-  FileCheck,
+  ShieldCheck,
   CheckCircle2,
-  Users,
-  Compass,
-  AlertTriangle,
-  Flame,
-  ChevronRight,
-  TrendingUp,
-  ClipboardList,
+  ChevronDown,
 } from 'lucide-react';
-import { User } from '../types';
+import { User, Incident } from '../types';
+import { api } from '../services/api';
+import { InteractiveMap } from '../components/InteractiveMap';
 
 interface LandingPageProps {
   onNavigate: (view: string) => void;
   onOpenReportModal: () => void;
   onOpenAIChat: () => void;
+  onSelectIncident?: (incident: Incident) => void;
   currentUser: User | null;
+  onUserChange?: (user: User) => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onNavigate,
   onOpenReportModal,
   onOpenAIChat,
+  onSelectIncident,
   currentUser,
+  onUserChange,
 }) => {
+  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [demoUsers, setDemoUsers] = useState<User[]>([]);
+  const [showRoleMenu, setShowRoleMenu] = useState(false);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const res = await api.incidents.getAll();
+      if (res.data) {
+        setIncidents(res.data);
+      }
+    } catch (err) {
+      console.warn('Failed to fetch incidents for landing map:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+    api.auth
+      .demoUsers()
+      .then((res: { success: boolean; users: User[] }) => {
+        if (res.users) setDemoUsers(res.users);
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await loadData();
+    setTimeout(() => setIsRefreshing(false), 600);
+  };
+
   return (
-    <div className="min-h-screen bg-[#F7FBF8] text-slate-800">
-      {/* Hero Section */}
-      <section className="relative pt-12 pb-20 overflow-hidden bg-gradient-to-b from-emerald-50/50 via-[#F7FBF8] to-[#EDF7F1]/40 border-b border-emerald-950/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100/80 border border-emerald-200 text-emerald-900 text-xs font-bold tracking-wide shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
-              <span>Next-Generation Environmental Intelligence &amp; Compliance</span>
-            </div>
+    <div className="relative min-h-screen bg-[#dff5f4] text-slate-800 overflow-x-hidden selection:bg-emerald-200 selection:text-emerald-950 pb-28">
+      {/* Decorative Cloud Shapes (faithful to image_d5a10934.png) */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
+        {/* Top-Left Cloud */}
+        <div className="absolute -top-6 -left-12 w-64 h-36 bg-white/70 rounded-full blur-[1px]" />
+        <div className="absolute top-8 left-16 w-44 h-24 bg-white/60 rounded-full blur-[1px]" />
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-emerald-950 tracking-tight leading-[1.12]">
-              See the Risk. Understand the Impact.{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-teal-600 to-sky-600">
-                Take Action.
-              </span>
-            </h1>
+        {/* Mid-Left Cloud */}
+        <div className="absolute top-72 -left-16 w-80 h-44 bg-white/75 rounded-full blur-[1px]" />
+        <div className="absolute top-64 left-12 w-48 h-32 bg-white/65 rounded-full blur-[1px]" />
 
-            <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              An intelligent environmental monitoring and compliance platform connecting citizens,
-              sensor data, and enforcement authorities to turn reported concerns into evidence-backed assessments.
-            </p>
+        {/* Bottom-Left Cloud */}
+        <div className="absolute top-[680px] -left-10 w-72 h-40 bg-white/80 rounded-full blur-[1px]" />
+        <div className="absolute top-[660px] left-14 w-44 h-28 bg-white/70 rounded-full blur-[1px]" />
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-              <button
-                onClick={onOpenReportModal}
-                className="px-6 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-emerald-700/20 hover:scale-[1.02] flex items-center gap-2"
-              >
-                <MapPin className="w-4 h-4" />
-                Report an Environmental Issue
-              </button>
+        {/* Top-Right Cloud */}
+        <div className="absolute top-12 -right-10 w-80 h-44 bg-white/70 rounded-full blur-[1px]" />
+        <div className="absolute top-6 right-20 w-52 h-32 bg-white/60 rounded-full blur-[1px]" />
 
-              <button
-                onClick={() => onNavigate('officer')}
-                className="px-6 py-3.5 bg-white border border-emerald-950/15 hover:border-emerald-700 text-emerald-900 font-bold text-sm rounded-xl transition-all shadow-xs hover:bg-emerald-50/50 flex items-center gap-2"
-              >
-                <Activity className="w-4 h-4 text-emerald-700" />
-                Explore Environmental Intelligence
-              </button>
-            </div>
+        {/* Mid-Right Cloud */}
+        <div className="absolute top-[480px] -right-14 w-72 h-36 bg-white/75 rounded-full blur-[1px]" />
+        <div className="absolute top-[450px] right-12 w-44 h-24 bg-white/65 rounded-full blur-[1px]" />
 
-            {/* Quick Demo Role Cards */}
-            <div className="pt-6 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-500">
-              <span className="font-semibold text-slate-700">Quick Demo Access:</span>
-              <button
-                onClick={() => onNavigate('citizen')}
-                className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:border-emerald-600 font-medium text-slate-800 transition-colors shadow-2xs"
-              >
-                Citizen Hub (Ananya)
-              </button>
-              <button
-                onClick={() => onNavigate('officer')}
-                className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:border-emerald-600 font-medium text-slate-800 transition-colors shadow-2xs"
-              >
-                Officer Command Center (Inspector Deshmukh)
-              </button>
-              <button
-                onClick={() => onNavigate('heatmap')}
-                className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:border-emerald-600 font-medium text-slate-800 transition-colors shadow-2xs"
-              >
-                Spatial Heatmap
-              </button>
-            </div>
+        {/* Bottom-Right Cloud */}
+        <div className="absolute top-[780px] -right-12 w-84 h-48 bg-white/80 rounded-full blur-[1px]" />
+        <div className="absolute top-[760px] right-20 w-56 h-36 bg-white/70 rounded-full blur-[1px]" />
+      </div>
+
+      {/* Top Header Bar */}
+      <header className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 sm:pt-6 flex items-center justify-between">
+        {/* Brand Logo Pill */}
+        <div className="flex items-center gap-2.5 bg-white/85 backdrop-blur-md px-4 py-2 rounded-2xl shadow-sm border border-emerald-950/10 hover:shadow transition">
+          <div className="w-7 h-7 rounded-lg bg-emerald-700 text-white flex items-center justify-center shadow-2xs">
+            <Sparkles className="w-4 h-4 text-emerald-100" />
           </div>
-
-          {/* Hero Visual: Dashboard Preview Mockup */}
-          <div className="mt-12 max-w-5xl mx-auto rounded-3xl overflow-hidden border border-emerald-950/15 shadow-2xl bg-white p-3 sm:p-5">
-            <div className="bg-slate-100/90 rounded-2xl p-4 sm:p-6 space-y-4">
-              {/* Header Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-3 h-3 rounded-full bg-rose-500" />
-                  <div className="w-3 h-3 rounded-full bg-amber-500" />
-                  <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                  <span className="ml-2 font-mono text-xs font-bold text-slate-600">
-                    EcoSentinel // Operations Command Center MMR
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-emerald-800 bg-emerald-100/60 px-3 py-1 rounded-lg">
-                  <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
-                  Live MMR Surveillance Grid
-                </div>
-              </div>
-
-              {/* Grid Widgets */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Widget 1 */}
-                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span>Critical Stack Emission</span>
-                    <span className="font-mono text-rose-600 font-bold">ECO-2026-1001</span>
-                  </div>
-                  <h4 className="font-bold text-sm text-slate-900 leading-snug">
-                    Vasai East Industrial Boiler Plume
-                  </h4>
-                  <div className="text-xs text-slate-600 flex items-center justify-between pt-1">
-                    <span>PM2.5: 218.4 µg/m³</span>
-                    <span className="text-rose-700 font-bold bg-rose-50 px-2 py-0.5 rounded">
-                      3.6x NAAQS Limit
-                    </span>
-                  </div>
-                  <div className="p-2 bg-emerald-50/70 rounded-lg text-[11px] text-emerald-900 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                    <span>AI Flag: Air Act Section 21 violation indicated</span>
-                  </div>
-                </div>
-
-                {/* Widget 2 */}
-                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span>Wetland Effluent Influx</span>
-                    <span className="font-mono text-orange-600 font-bold">ECO-2026-1002</span>
-                  </div>
-                  <h4 className="font-bold text-sm text-slate-900 leading-snug">
-                    Mira Road Mangrove Dye Discharge
-                  </h4>
-                  <div className="text-xs text-slate-600 flex items-center justify-between pt-1">
-                    <span>COD: 680 mg/L</span>
-                    <span className="text-orange-700 font-bold bg-orange-50 px-2 py-0.5 rounded">
-                      Statutory Max: 250
-                    </span>
-                  </div>
-                  <div className="p-2 bg-blue-50/70 rounded-lg text-[11px] text-blue-900 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-700 shrink-0" />
-                    <span>Action ACT-202: Storm culvert plug sealed</span>
-                  </div>
-                </div>
-
-                {/* Widget 3 */}
-                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span>Quarry Hazardous Dump</span>
-                    <span className="font-mono text-purple-600 font-bold">ECO-2026-1005</span>
-                  </div>
-                  <h4 className="font-bold text-sm text-slate-900 leading-snug">
-                    Taloja 35 Leaking Chemical Drums
-                  </h4>
-                  <div className="text-xs text-slate-600 flex items-center justify-between pt-1">
-                    <span>VOC: 285 µg/m³</span>
-                    <span className="text-rose-700 font-bold bg-rose-50 px-2 py-0.5 rounded">
-                      Groundwater Threat
-                    </span>
-                  </div>
-                  <div className="p-2 bg-purple-50/70 rounded-lg text-[11px] text-purple-900 flex items-center gap-1.5">
-                    <ShieldAlert className="w-3.5 h-3.5 text-purple-700 shrink-0" />
-                    <span>Emergency HAZMAT containment assigned</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Banner Inside Preview */}
-              <div className="bg-emerald-900 text-white rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-3">
-                  <Layers className="w-5 h-5 text-emerald-300" />
-                  <div>
-                    <span className="font-bold text-sm">Interactive Spatial Risk Heatmap</span>
-                    <p className="text-emerald-200/80 text-[11px]">
-                      Covering Vasai-Virar, Mira-Bhayandar, Thane, Mumbai Suburban, Navi Mumbai, &amp; Palghar
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => onNavigate('heatmap')}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-lg text-white transition-colors"
-                >
-                  Open Full Heatmap View
-                </button>
-              </div>
-            </div>
-          </div>
+          <span className="font-bold text-base sm:text-lg text-emerald-950 tracking-tight">
+            EcoSentinel
+          </span>
         </div>
-      </section>
 
-      {/* Section C: Live Environmental Overview (Demonstration Stats) */}
-      <section className="py-12 bg-white border-b border-emerald-950/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div className="p-4 rounded-2xl bg-[#F7FBF8] border border-emerald-950/5">
-              <div className="text-3xl sm:text-4xl font-extrabold text-emerald-900 font-mono">40+</div>
-              <div className="text-xs font-semibold text-slate-600 mt-1">Tracked Incidents in MMR</div>
-            </div>
-            <div className="p-4 rounded-2xl bg-[#F7FBF8] border border-emerald-950/5">
-              <div className="text-3xl sm:text-4xl font-extrabold text-rose-600 font-mono">14</div>
-              <div className="text-xs font-semibold text-slate-600 mt-1">High-Risk Industrial Areas</div>
-            </div>
-            <div className="p-4 rounded-2xl bg-[#F7FBF8] border border-emerald-950/5">
-              <div className="text-3xl sm:text-4xl font-extrabold text-teal-700 font-mono">100%</div>
-              <div className="text-xs font-semibold text-slate-600 mt-1">CPCB Regulatory Grounding</div>
-            </div>
-            <div className="p-4 rounded-2xl bg-[#F7FBF8] border border-emerald-950/5">
-              <div className="text-3xl sm:text-4xl font-extrabold text-sky-600 font-mono">6 Regions</div>
-              <div className="text-xs font-semibold text-slate-600 mt-1">Active Spatial Monitoring</div>
-            </div>
+        {/* Right Action Pills */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Live Refresh Button */}
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="bg-white/90 hover:bg-white text-emerald-900 border border-emerald-950/10 px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-xs transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
+            title="Refresh live environmental telemetry"
+          >
+            <RefreshCw
+              className={`w-3.5 h-3.5 text-emerald-700 ${isRefreshing ? 'animate-spin' : ''}`}
+            />
+            <span className="hidden xs:inline">Live Refresh</span>
+            <span className="xs:hidden">Refresh</span>
+          </button>
+
+          {/* Sign in as environment official / Demo Role Switcher */}
+          <div className="relative">
+            <button
+              onClick={() => onNavigate('officer')}
+              className="bg-white/90 hover:bg-white text-emerald-950 border border-emerald-950/10 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 shadow-xs transition hover:scale-[1.02] active:scale-95"
+            >
+              <UserCheck className="w-4 h-4 text-emerald-700" />
+              <span>Sign in as environment official</span>
+            </button>
           </div>
+
+          {/* Quick Switch to Citizen Hub */}
+          <button
+            onClick={() => onNavigate('citizen')}
+            className="hidden md:flex bg-emerald-900/10 hover:bg-emerald-900/20 text-emerald-950 px-3 py-2 rounded-full text-xs font-semibold items-center gap-1.5 transition"
+            title="Switch to Citizen Hub"
+          >
+            <span>Citizen Hub</span>
+          </button>
         </div>
-      </section>
+      </header>
 
-      {/* Section A: Environmental Intelligence Explained */}
-      <section className="py-20 bg-[#F7FBF8]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-extrabold text-emerald-950 tracking-tight">
-              A Connected Environmental Intelligence Engine
-            </h2>
-            <p className="text-sm text-slate-600 mt-3 leading-relaxed">
-              Traditional environmental complaints languish in disconnected silos. EcoSentinel unites
-              citizen vigilance, continuous sensors, and regulatory enforcement into one explainable, trackable pipeline.
-            </p>
+      {/* Main Hero & Live Map Section */}
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 space-y-8">
+        {/* Centered Typography Hero */}
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-emerald-800">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+            <span>LIVE ENVIRONMENT MONITORING</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
-                <Users className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900">1. Citizen Observation</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Empowers residents to report odors, smoke plumes, illegal dumping, and creek discoloration
-                with geo-coordinates, photos, and time-stamped evidence.
-              </p>
-            </div>
+          {/* Headline */}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#113227] tracking-tight leading-[1.12]">
+            See the air{' '}
+            <span className="font-serif italic font-normal text-[#1e4620] block sm:inline">
+              around you.
+            </span>
+          </h1>
 
-            <div className="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900">2. AI-Assisted Assessment</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Gemini automatically screens reported observations against regional telemetry, separates verified evidence
-                from unconfirmed claims, and computes transparent risk scores.
-              </p>
-            </div>
-
-            <div className="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-sky-100 text-sky-800 flex items-center justify-center">
-                <Scale className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900">3. Regulatory Action &amp; Closure</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Officers match observations with statutory standards (NAAQS, Water Act, SWM Rules), schedule
-                on-site inspections, mandate corrective actions, and track verifiable remediation.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section B: How It Works (6 Steps) */}
-      <section className="py-20 bg-white border-y border-emerald-950/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs font-bold text-emerald-700 tracking-wider uppercase">End-to-End Lifecycle</span>
-            <h2 className="text-3xl font-extrabold text-emerald-950 tracking-tight mt-1">
-              How EcoSentinel Resolves Environmental Concerns
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                num: '01',
-                title: 'Report Concern',
-                desc: 'Citizen enters location, selects medium (air, water, soil, noise), and attaches photos or sensor logs.',
-              },
-              {
-                num: '02',
-                title: 'Analyze Evidence',
-                desc: 'Server-side Gemini AI extracts chemical context, checks local CAAQMS baselines, and flags anomalies.',
-              },
-              {
-                num: '03',
-                title: 'Identify Potential Risks',
-                desc: 'System assigns an explainable risk rating (Low, Moderate, High, Critical) with confidence intervals.',
-              },
-              {
-                num: '04',
-                title: 'Review Standards',
-                desc: 'Checks measurements against statutory CPCB/MoEFCC thresholds (e.g. 60 µg/m³ PM2.5, 250 mg/L COD).',
-              },
-              {
-                num: '05',
-                title: 'Assign Corrective Action',
-                desc: 'Enforcement officers schedule field audits, issue show-cause notices, and require equipment fixes.',
-              },
-              {
-                num: '06',
-                title: 'Track Resolution',
-                desc: 'Audit logs record every state transition, verify photographic repair evidence, and close the case.',
-              },
-            ].map((step) => (
-              <div key={step.num} className="p-6 rounded-2xl bg-[#F7FBF8] border border-slate-200/80 space-y-2">
-                <span className="font-mono text-2xl font-black text-emerald-700/80">{step.num}</span>
-                <h4 className="font-bold text-sm text-slate-900">{step.title}</h4>
-                <p className="text-xs text-slate-600 leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Section D: Core Features */}
-      <section className="py-20 bg-[#F7FBF8]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-3xl font-extrabold text-emerald-950 tracking-tight">
-              Designed for Public Impact &amp; Regulatory Rigor
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-3">
-              <Layers className="w-8 h-8 text-emerald-700" />
-              <h4 className="font-bold text-base text-slate-900">Interactive Pollution Heatmaps</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Pan, zoom, and filter across air, water, industrial stack, and waste layers across the Mumbai Metropolitan Region.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-3">
-              <Sparkles className="w-8 h-8 text-teal-600" />
-              <h4 className="font-bold text-base text-slate-900">EcoGuide AI Assistant</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Gemini-powered chatbot grounded in live database telemetry to answer questions about regional trends and compliance limits.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-3">
-              <FileCheck className="w-8 h-8 text-blue-600" />
-              <h4 className="font-bold text-base text-slate-900">Statutory Compliance Library</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Curated directory of Central Pollution Control Board standards with automated parameter exceedance comparisons.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-3">
-              <TrendingUp className="w-8 h-8 text-indigo-600" />
-              <h4 className="font-bold text-base text-slate-900">Predictive Forecasting &amp; Anomalies</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Mathematical Z-score anomaly detection and 7-day statistical moving average forecasting with confidence bands.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-3">
-              <ClipboardList className="w-8 h-8 text-amber-600" />
-              <h4 className="font-bold text-base text-slate-900">Inspection &amp; Action Management</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Officer schedules, printable inspection protocols, due-date alerts, and tamper-evident audit trails.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-3">
-              <Users className="w-8 h-8 text-emerald-800" />
-              <h4 className="font-bold text-base text-slate-900">Role-Based Operations</h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Tailored workflows for citizens, environmental field officers, and state regulatory administrators.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section E: CTA */}
-      <section className="py-20 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white text-center">
-        <div className="max-w-4xl mx-auto px-4 space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Every observation matters. Every action counts.
-          </h2>
-          <p className="text-emerald-100 text-sm max-w-xl mx-auto leading-relaxed">
-            Join thousands of active citizens and environmental enforcement officers working together
-            to safeguard our air, water, and communities.
+          {/* Subtitle */}
+          <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto leading-relaxed pt-1">
+            Stay informed about air quality in your neighborhood and help build a healthier, more
+            responsive community with automated AI triage.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-            <button
-              onClick={onOpenReportModal}
-              className="px-6 py-3 bg-white text-emerald-900 hover:bg-emerald-50 font-bold text-sm rounded-xl transition-all shadow-md"
-            >
-              Report an Environmental Concern
-            </button>
-            <button
-              onClick={onOpenAIChat}
-              className="px-6 py-3 bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-sm rounded-xl transition-all border border-emerald-500/40"
-            >
-              Consult EcoGuide AI
-            </button>
-          </div>
         </div>
-      </section>
+
+        {/* Section Header directly above the map */}
+        <div className="pt-2 text-left">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-800">
+            INTERACTIVE AIR QUALITY MAP
+          </div>
+          <h2 className="text-lg sm:text-xl font-bold text-[#113227] mt-0.5">
+            Live Mumbai Air Telemetry &amp; Station Network
+          </h2>
+          <p className="text-xs text-slate-600 mt-0.5">
+            Pan, zoom, search any neighborhood, or click on monitoring stations to inspect live
+            pollutant concentrations.
+          </p>
+        </div>
+
+        {/* Map Container Card (Directly embedded on opening page, no button required!) */}
+        <div className="rounded-3xl shadow-xl overflow-hidden bg-white border border-emerald-950/10 p-2 sm:p-3 relative">
+          <InteractiveMap
+            incidents={incidents}
+            onSelectIncident={onSelectIncident}
+            initialCenter={[19.18, 72.92]}
+            initialZoom={10}
+            heightClass="h-[480px] sm:h-[540px]"
+            showLayerControls={true}
+            showSearchBar={true}
+          />
+        </div>
+      </main>
+
+      {/* Floating Bottom Action Buttons (Matching image_d5a10934.png) */}
+      <div className="fixed bottom-6 left-6 right-6 z-40 pointer-events-none flex items-center justify-between max-w-6xl mx-auto">
+        {/* Left Bottom: Ask EcoGuide AI */}
+        <button
+          onClick={onOpenAIChat}
+          className="pointer-events-auto bg-[#064e3b] hover:bg-[#043d2e] text-white px-5 py-3 rounded-full font-bold text-xs sm:text-sm shadow-xl flex items-center gap-2.5 transition transform hover:scale-[1.03] active:scale-95 border border-emerald-600/30 cursor-pointer"
+        >
+          <div className="w-5 h-5 rounded-full bg-emerald-500/30 flex items-center justify-center">
+            <Bot className="w-3.5 h-3.5 text-emerald-200" />
+          </div>
+          <span>Ask EcoGuide AI</span>
+        </button>
+
+        {/* Right Bottom: Report a pollution issue */}
+        <button
+          onClick={onOpenReportModal}
+          className="pointer-events-auto bg-[#064e3b] hover:bg-[#043d2e] text-white px-5 py-3 rounded-full font-bold text-xs sm:text-sm shadow-xl flex items-center gap-2.5 transition transform hover:scale-[1.03] active:scale-95 border border-emerald-600/30 cursor-pointer"
+        >
+          <div className="w-5 h-5 rounded-full bg-emerald-500/30 flex items-center justify-center">
+            <Plus className="w-3.5 h-3.5 text-emerald-200" />
+          </div>
+          <span>Report a pollution issue</span>
+        </button>
+      </div>
     </div>
   );
 };
+export default LandingPage;

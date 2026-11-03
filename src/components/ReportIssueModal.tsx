@@ -32,11 +32,16 @@ export const ReportIssueModal: React.FC<ReportIssueModalProps> = ({
   const [medium, setMedium] = useState<'air' | 'water' | 'soil' | 'noise' | 'multimedia'>('air');
   const [description, setDescription] = useState('');
 
-  // Automatically acquired location (no manual user input)
+  // Default Fallback: Dwarkadas J. Sanghvi College of Engineering (DJ Sanghvi)
+  const DJ_SANGHVI_COORDS = { lat: 19.1075, lng: 72.8372 };
+  const DJ_SANGHVI_LOCATION = 'Dwarkadas J. Sanghvi College of Engineering, Vile Parle West, Mumbai';
+  const DJ_SANGHVI_REGION = 'Mumbai Suburban';
+
+  // Automatically acquired location (no manual user input; fallback to DJ Sanghvi)
   const [location, setLocation] = useState('Detecting current GPS coordinates...');
-  const [region, setRegion] = useState('Mumbai Metropolitan Region');
-  const [latitude, setLatitude] = useState(19.3912);
-  const [longitude, setLongitude] = useState(72.8541);
+  const [region, setRegion] = useState(DJ_SANGHVI_REGION);
+  const [latitude, setLatitude] = useState(DJ_SANGHVI_COORDS.lat);
+  const [longitude, setLongitude] = useState(DJ_SANGHVI_COORDS.lng);
   const [isLocating, setIsLocating] = useState(true);
   const [locationError, setLocationError] = useState<string | null>(null);
 
@@ -53,7 +58,7 @@ export const ReportIssueModal: React.FC<ReportIssueModalProps> = ({
     setLocationError(null);
 
     if (!navigator.geolocation) {
-      resolveFallbackLocation(19.3912, 72.8541, 'Geolocation not supported by browser; using regional node');
+      applyDjSanghviFallback();
       return;
     }
 
@@ -83,34 +88,22 @@ export const ReportIssueModal: React.FC<ReportIssueModalProps> = ({
         setIsLocating(false);
       },
       (err) => {
-        console.warn('Geolocation access error, applying regional anchor:', err.message);
-        resolveFallbackLocation(19.2812, 72.8594, 'Using calibrated MMR environmental corridor');
+        console.warn('Geolocation access error, applying DJ Sanghvi default:', err.message);
+        applyDjSanghviFallback();
       },
       {
         enableHighAccuracy: true,
-        timeout: 8000,
+        timeout: 6000,
         maximumAge: 10000,
       }
     );
   };
 
-  const resolveFallbackLocation = async (lat: number, lng: number, note: string) => {
-    setLatitude(lat);
-    setLongitude(lng);
-    try {
-      const res = await fetch(`/api/geocode/reverse?lat=${lat}&lng=${lng}`);
-      if (res.ok) {
-        const data = await res.json();
-        setLocation(data.location || `GPS Node (${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E)`);
-        setRegion(data.region || 'Mumbai Metropolitan Region');
-      } else {
-        setLocation(`Vasai-Virar Industrial Belt (${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E)`);
-        setRegion('Vasai-Virar');
-      }
-    } catch {
-      setLocation(`Vasai-Virar Corridor (${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E)`);
-      setRegion('Vasai-Virar');
-    }
+  const applyDjSanghviFallback = () => {
+    setLatitude(DJ_SANGHVI_COORDS.lat);
+    setLongitude(DJ_SANGHVI_COORDS.lng);
+    setLocation(DJ_SANGHVI_LOCATION);
+    setRegion(DJ_SANGHVI_REGION);
     setIsLocating(false);
   };
 

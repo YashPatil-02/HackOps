@@ -5,9 +5,10 @@ import {
   AdvancedMarker,
   Pin,
   InfoWindow,
+  useMap,
 } from '@vis.gl/react-google-maps';
 import { Incident } from '../types';
-import { Flame, Layers, MapPin, Eye, AlertTriangle, ShieldCheck, Filter } from 'lucide-react';
+import { Flame, Layers, MapPin, Eye, AlertTriangle, Filter, Search, Crosshair, Loader2 } from 'lucide-react';
 
 interface InteractiveMapProps {
   incidents: Incident[];
@@ -17,10 +18,54 @@ interface InteractiveMapProps {
   initialZoom?: number;
   heightClass?: string;
   showLayerControls?: boolean;
+  showSearchBar?: boolean;
 }
 
 const GOOGLE_MAPS_API_KEY =
   import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyCFhN6QFnhnOLq1WCJHrHFjPbNOjywQwRA';
+
+const MMR_LOCATIONS: Record<string, { lat: number; lng: number }> = {
+  vasai: { lat: 19.3919, lng: 72.8397 },
+  virar: { lat: 19.47, lng: 72.8 },
+  'mira road': { lat: 19.2812, lng: 72.8561 },
+  mira: { lat: 19.2812, lng: 72.8561 },
+  bhayandar: { lat: 19.3, lng: 72.85 },
+  thane: { lat: 19.1966, lng: 72.9928 },
+  kalwa: { lat: 19.1966, lng: 72.9928 },
+  andheri: { lat: 19.1176, lng: 72.8631 },
+  taloja: { lat: 19.062, lng: 73.1118 },
+  'navi mumbai': { lat: 19.033, lng: 73.0297 },
+  bkc: { lat: 19.0657, lng: 72.8687 },
+  kurla: { lat: 19.065, lng: 72.879 },
+  borivali: { lat: 19.2288, lng: 72.8541 },
+  dadar: { lat: 19.0178, lng: 72.8478 },
+  colaba: { lat: 18.9067, lng: 72.8147 },
+  chembur: { lat: 19.0626, lng: 72.8988 },
+  powai: { lat: 19.1197, lng: 72.9051 },
+  kalyan: { lat: 19.2437, lng: 73.1355 },
+  dombivli: { lat: 19.2184, lng: 73.0867 },
+  panvel: { lat: 18.9894, lng: 73.1175 },
+  'dj sanghvi': { lat: 19.1075, lng: 72.8372 },
+  'djsanghvi': { lat: 19.1075, lng: 72.8372 },
+  'vile parle': { lat: 19.1075, lng: 72.8372 },
+};
+
+// Child controller inside APIProvider to access useMap
+const MapCameraController: React.FC<{
+  targetCoords: { lat: number; lng: number } | null;
+  targetZoom: number;
+}> = ({ targetCoords, targetZoom }) => {
+  const map = useMap();
+
+  React.useEffect(() => {
+    if (map && targetCoords) {
+      map.panTo(targetCoords);
+      map.setZoom(targetZoom);
+    }
+  }, [map, targetCoords, targetZoom]);
+
+  return null;
+};
 
 export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   incidents,
@@ -30,11 +75,77 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   initialZoom = 10,
   heightClass = 'h-[540px]',
   showLayerControls = true,
+  showSearchBar = true,
 }) => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [activeRisk, setActiveRisk] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'markers' | 'heatmap'>('markers');
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [cameraCoords, setCameraCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [cameraZoom, setCameraZoom] = useState(initialZoom);
+  const [isLocating, setIsLocating] = useState(false);
+
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return;
+
+    // Check MMR known presets
+    for (const [key, coords] of Object.entries(MMR_LOCATIONS)) {
+      if (query.includes(key) || key.includes(query)) {
+        setCameraCoords(coords);
+        setCameraZoom(13);
+        return;
+      }
+    }
+
+    // Check matching incidents
+    const match = incidents.find(
+      (inc) =>
+        inc.location.toLowerCase().includes(query) ||
+        inc.region.toLowerCase().includes(query) ||
+        inc.title.toLowerCase().includes(query)
+    );
+    if (match) {
+      setCameraCoords({ lat: match.latitude, lng: match.longitude });
+      setCameraZoom(14);
+      setSelectedIncident(match);
+      return;
+    }
+
+    // Fallback: reverse/forward geocode via server
+    fetch(`/api/geocode/reverse?lat=19.18&lng=72.92`)
+      .catch(() => {})
+      .finally(() => {
+        // Center around default MMR
+        setCameraCoords({ lat: 19.18, lng: 72.92 });
+        setCameraZoom(11);
+      });
+  };
+
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+      setCameraCoords({ lat: 19.1075, lng: 72.8372 }); // DJ Sanghvi default
+      setCameraZoom(15);
+      return;
+    }
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCameraCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setCameraZoom(14);
+        setIsLocating(false);
+      },
+      () => {
+        // Fallback default: DJ Sanghvi College of Engineering
+        setCameraCoords({ lat: 19.1075, lng: 72.8372 });
+        setCameraZoom(15);
+        setIsLocating(false);
+      },
+      { timeout: 8000 }
+    );
+  };
 
   // Filter incidents based on category and risk level
   const filteredIncidents = incidents.filter((inc) => {
@@ -169,7 +280,47 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
       {/* Google Maps Viewport Container */}
       <div className={`relative w-full ${heightClass} bg-slate-100`}>
+        {/* Floating Search & Location Controls (as in image_d5a10934.png) */}
+        {showSearchBar && (
+          <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 max-w-[calc(100%-2rem)]">
+            <form
+              onSubmit={handleSearch}
+              className="bg-white/95 backdrop-blur-md rounded-2xl shadow-md border border-slate-200/90 p-1 flex items-center gap-1.5 pl-3"
+            >
+              <Search className="w-4 h-4 text-emerald-700 shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search address or neighborhood..."
+                className="text-xs bg-transparent text-slate-800 placeholder-slate-400 focus:outline-none w-48 sm:w-64 font-medium"
+              />
+              <button
+                type="submit"
+                className="bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition shadow-2xs"
+              >
+                Go
+              </button>
+            </form>
+
+            <button
+              type="button"
+              onClick={handleLocateMe}
+              disabled={isLocating}
+              className="bg-white/95 backdrop-blur-md hover:bg-white text-emerald-900 border border-slate-200/90 rounded-2xl px-3.5 py-2 text-xs font-bold shadow-md flex items-center gap-1.5 transition active:scale-95 disabled:opacity-60"
+            >
+              {isLocating ? (
+                <Loader2 className="w-3.5 h-3.5 text-emerald-700 animate-spin" />
+              ) : (
+                <Crosshair className="w-3.5 h-3.5 text-emerald-700" />
+              )}
+              <span>Locate Me</span>
+            </button>
+          </div>
+        )}
+
         <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
+          <MapCameraController targetCoords={cameraCoords} targetZoom={cameraZoom} />
           <GoogleMap
             mapId="DEMO_MAP_ID"
             defaultCenter={{ lat: initialCenter[0], lng: initialCenter[1] }}
