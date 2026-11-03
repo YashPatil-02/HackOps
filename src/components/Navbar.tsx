@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Leaf,
   Shield,
   UserCheck,
-  Bell,
   Sparkles,
   MapPin,
   RefreshCw,
@@ -14,7 +13,7 @@ import {
   Activity,
   Layers,
 } from 'lucide-react';
-import { User, Notification } from '../types';
+import { User } from '../types';
 import { api, setCurrentUserHeader } from '../services/api';
 
 interface NavbarProps {
@@ -35,23 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenReportModal,
 }) => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isResetting, setIsResetting] = useState(false);
-
-  // Fetch notifications
-  useEffect(() => {
-    if (currentUser) {
-      api.notifications
-        .getAll()
-        .then((res) => {
-          if (res.data) setNotifications(res.data);
-        })
-        .catch(() => {});
-    }
-  }, [currentUser]);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const handleSwitchUser = async (email: string) => {
     try {
@@ -70,11 +53,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     } catch (err) {
       console.error('Failed to switch user:', err);
     }
-  };
-
-  const handleMarkAllNotifications = async () => {
-    await api.notifications.markAllRead();
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
   const handleResetDemoData = async () => {
@@ -117,6 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* Navigation Items */}
+          {/* Navigation Items */}
           <nav className="hidden lg:flex items-center gap-1 text-sm font-medium">
             <button
               onClick={() => onNavigate('landing')}
@@ -128,50 +107,45 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               Public Portal
             </button>
-            <button
-              onClick={() => onNavigate('citizen')}
-              className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
-                currentView === 'citizen'
-                  ? 'bg-emerald-50 text-emerald-800 font-semibold'
-                  : 'text-slate-600 hover:text-emerald-800 hover:bg-slate-50'
-              }`}
-            >
-              <UserCheck className="w-4 h-4 text-emerald-600" />
-              Citizen Hub
-            </button>
-            <button
-              onClick={() => onNavigate('officer')}
-              className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
-                currentView === 'officer'
-                  ? 'bg-emerald-50 text-emerald-800 font-semibold'
-                  : 'text-slate-600 hover:text-emerald-800 hover:bg-slate-50'
-              }`}
-            >
-              <Shield className="w-4 h-4 text-emerald-700" />
-              Operations Center
-            </button>
-            <button
-              onClick={() => onNavigate('heatmap')}
-              className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
-                currentView === 'heatmap'
-                  ? 'bg-emerald-50 text-emerald-800 font-semibold'
-                  : 'text-slate-600 hover:text-emerald-800 hover:bg-slate-50'
-              }`}
-            >
-              <Layers className="w-4 h-4 text-sky-600" />
-              Risk Map
-            </button>
-            <button
-              onClick={() => onNavigate('compliance')}
-              className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
-                currentView === 'compliance'
-                  ? 'bg-emerald-50 text-emerald-800 font-semibold'
-                  : 'text-slate-600 hover:text-emerald-800 hover:bg-slate-50'
-              }`}
-            >
-              <FileText className="w-4 h-4 text-amber-600" />
-              Compliance
-            </button>
+
+            {currentUser?.role === 'citizen' ? (
+              <button
+                onClick={() => onNavigate('citizen')}
+                className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+                  currentView === 'citizen'
+                    ? 'bg-emerald-50 text-emerald-800 font-semibold'
+                    : 'text-slate-600 hover:text-emerald-800 hover:bg-slate-50'
+                }`}
+              >
+                <Activity className="w-4 h-4 text-emerald-600" />
+                Command Center
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => onNavigate('officer')}
+                  className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+                    currentView === 'officer'
+                      ? 'bg-emerald-50 text-emerald-800 font-semibold'
+                      : 'text-slate-600 hover:text-emerald-800 hover:bg-slate-50'
+                  }`}
+                >
+                  <Shield className="w-4 h-4 text-emerald-700" />
+                  Operations Center
+                </button>
+                <button
+                  onClick={() => onNavigate('compliance')}
+                  className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+                    currentView === 'compliance'
+                      ? 'bg-emerald-50 text-emerald-800 font-semibold'
+                      : 'text-slate-600 hover:text-emerald-800 hover:bg-slate-50'
+                  }`}
+                >
+                  <FileText className="w-4 h-4 text-amber-600" />
+                  Compliance Intelligence
+                </button>
+              </>
+            )}
           </nav>
         </div>
 
@@ -181,78 +155,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           {onOpenReportModal && (
             <button
               onClick={onOpenReportModal}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded-lg transition-colors shadow-xs"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition-all shadow-xs"
             >
               <MapPin className="w-3.5 h-3.5" /> Report Issue
             </button>
           )}
 
-          {/* AI Assistant Button */}
+          {/* Ask EcoGuide AI Copilot (Only from top) */}
           <button
             onClick={onOpenAIChat}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-200/80 hover:bg-emerald-100/70 text-emerald-900 text-xs font-semibold rounded-lg transition-all shadow-2xs"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-300 hover:border-emerald-500 text-emerald-950 text-xs font-bold rounded-xl transition-all shadow-xs hover:shadow-sm"
           >
-            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-            <span className="hidden sm:inline">EcoGuide AI</span>
+            <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
+            <span>Ask EcoGuide AI</span>
           </button>
-
-          {/* Notification Bell */}
-          <div className="relative">
-            <button
-              onClick={() => setShowNotifications(!showNotifications)}
-              className="p-2 rounded-lg text-slate-600 hover:text-emerald-800 hover:bg-slate-100 relative transition-colors"
-              title="Notifications"
-            >
-              <Bell className="w-4 h-4" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center">
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-
-            {/* Notification Drawer */}
-            {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-200 p-3 z-50">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                  <span className="font-bold text-xs text-slate-800">
-                    Notifications ({notifications.length})
-                  </span>
-                  {unreadCount > 0 && (
-                    <button
-                      onClick={handleMarkAllNotifications}
-                      className="text-[11px] text-emerald-700 hover:text-emerald-800 font-medium"
-                    >
-                      Mark all as read
-                    </button>
-                  )}
-                </div>
-
-                <div className="max-h-72 overflow-y-auto divide-y divide-slate-50 my-1">
-                  {notifications.length === 0 ? (
-                    <div className="py-6 text-center text-xs text-slate-400">No notifications yet.</div>
-                  ) : (
-                    notifications.map((n) => (
-                      <div
-                        key={n.id}
-                        className={`p-2.5 text-xs transition-colors rounded-lg ${
-                          !n.read ? 'bg-emerald-50/50' : 'hover:bg-slate-50'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-slate-800">{n.title}</span>
-                          <span className="text-[10px] text-slate-400">
-                            {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        </div>
-                        <p className="text-slate-600 mt-1 line-clamp-2 leading-relaxed">{n.message}</p>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
 
           {/* User Profile & Demo Switcher */}
           <div className="relative">

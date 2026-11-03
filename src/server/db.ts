@@ -131,7 +131,7 @@ class DatabaseService {
       if (fs.existsSync(DB_FILE)) {
         const raw = fs.readFileSync(DB_FILE, 'utf-8');
         const parsed = JSON.parse(raw);
-        if (parsed.incidents && parsed.incidents.length > 0) {
+        if (parsed.users) {
           return parsed;
         }
       }

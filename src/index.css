@@ -58,20 +58,40 @@
   transform: scale(1.15);
 }
 
-/* Print styles for inspection and compliance reports */
+/* Print styles for statutory reports and legal notices */
 @media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  header, nav, button, .no-print, [role="navigation"] {
+    display: none !important;
+  }
   body * {
     visibility: hidden;
   }
   #printable-report, #printable-report * {
-    visibility: visible;
+    visibility: visible !important;
   }
   #printable-report {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    margin: 0;
-    padding: 20px;
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    page-break-inside: auto;
   }
 }
+

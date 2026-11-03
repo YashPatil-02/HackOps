@@ -696,7 +696,61 @@ export const IncidentDetailModal: React.FC<IncidentDetailModalProps> = ({
 
                   {showNewAct && (
                     <form onSubmit={handleCreateAction} className="bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200 space-y-3">
-                      <div className="text-xs font-bold text-emerald-950">Issue Corrective Directive</div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs font-bold text-emerald-950">Issue Corrective Directive</div>
+                        <span className="text-[10px] font-semibold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-emerald-600" /> AI Suggestions
+                        </span>
+                      </div>
+
+                      {/* AI Suggestions Shelf */}
+                      <div className="bg-white/80 p-2.5 rounded-xl border border-emerald-200/80 space-y-1">
+                        <span className="text-[10px] font-bold text-emerald-950 block">AI Recommended Directives (Click to Apply):</span>
+                        <div className="flex flex-wrap gap-1">
+                          {[
+                            {
+                              label: 'Air Act Sec 31A Notice',
+                              desc: 'Issue Section 31A directive: Cease non-compliant boiler operation until high-efficiency bag filter & wet scrubber are serviced.',
+                              party: 'Plant Operations Director',
+                              days: 7,
+                            },
+                            {
+                              label: 'Water Act Sec 33A Concrete Plug',
+                              desc: 'Direct permanent concrete sealing of illicit effluent bypass pipe and mandate connection to municipal/CETP drain.',
+                              party: 'Facility Environmental Officer',
+                              days: 5,
+                            },
+                            {
+                              label: 'Hazmat TSDF Transfer',
+                              desc: 'Mandate 48-hour overpacking of chemical drums, secondary berm installation, and transfer to certified TSDF site.',
+                              party: 'Facility Safety Coordinator',
+                              days: 2,
+                            },
+                            {
+                              label: 'Install Online OCEMS',
+                              desc: 'Mandate installation of continuous online stack emission/effluent sensor with direct telemetry to SPCB servers.',
+                              party: 'Technical Director',
+                              days: 14,
+                            },
+                          ].map((sug, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => {
+                                setActDesc(sug.desc);
+                                setActParty(sug.party);
+                                const d = new Date();
+                                d.setDate(d.getDate() + sug.days);
+                                setActDueDate(d.toISOString().split('T')[0]);
+                              }}
+                              className="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 px-2 py-0.5 rounded font-medium transition-colors"
+                            >
+                              + {sug.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
                       <div>
                         <label className="block text-[11px] font-semibold text-slate-700 mb-1">Action Description</label>
                         <textarea

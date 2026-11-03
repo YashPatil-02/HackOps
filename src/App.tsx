@@ -112,16 +112,6 @@ export function App() {
           />
         )}
 
-        {currentView === 'heatmap' && currentUser && (
-          <OfficerDashboard
-            key={`heatmap-${refreshTrigger}`}
-            currentUser={currentUser}
-            onSelectIncident={handleIncidentSelected}
-            onOpenAIChat={() => setIsAIChatOpen(true)}
-            initialTab="heatmap"
-          />
-        )}
-
         {currentView === 'compliance' && currentUser && (
           <OfficerDashboard
             key={`compliance-${refreshTrigger}`}
@@ -132,19 +122,6 @@ export function App() {
           />
         )}
       </main>
-
-      {/* Floating Action Launcher for EcoGuide AI */}
-      {!isAIChatOpen && (
-        <button
-          onClick={() => setIsAIChatOpen(true)}
-          className="fixed bottom-6 right-6 z-40 px-4 py-3 bg-emerald-800 hover:bg-emerald-900 text-white rounded-full shadow-xl shadow-emerald-900/25 flex items-center gap-2 text-xs font-bold transition-all hover:scale-105 border border-emerald-700/60"
-        >
-          <div className="w-6 h-6 rounded-full bg-emerald-700 flex items-center justify-center text-emerald-200">
-            <Sparkles className="w-3.5 h-3.5" />
-          </div>
-          <span>Ask EcoGuide AI</span>
-        </button>
-      )}
 
       {/* Global Modals */}
       <ReportIssueModal
