@@ -1,0 +1,1226 @@
+# MASTER PROMPT — GOOGLE AI STUDIO
+## Environmental Intelligence & Compliance Management System
+
+You are an expert full-stack software engineer, AI engineer, UI/UX designer, data analyst, and hackathon-winning product architect.
+
+Build a complete, functional, full-stack web application called **EcoSentinel — Environmental Intelligence & Compliance Management System**.
+
+This project is based on the following problem statement:
+
+"Develop an Environmental Intelligence & Compliance Management System that helps communities, industries and public authorities understand environmental incidents, recognize emerging risks and take informed action. The system should connect environmental observations, predictive insights, applicable standards and incident-management workflows to turn a reported concern into an evidence-backed assessment and a trackable response."
+
+The application must be a working prototype demonstrating the complete journey from environmental incident reporting to AI-powered analysis, compliance assessment, officer investigation, corrective action, and final resolution.
+
+Do not build only a landing page or static dashboard.
+
+Build a real, interactive application with working frontend, backend, database operations, AI integration, analytics, maps, and role-based access.
+
+---
+
+# 1. PRODUCT IDENTITY
+
+Product Name: EcoSentinel
+
+Tagline: "Turning Environmental Data Into Action."
+
+Brand personality:
+- Modern environmental intelligence platform.
+- Trustworthy, intelligent, innovative, and transparent.
+- Designed for citizens, environmental authorities, industries, and analysts.
+- Premium enterprise SaaS design with a bright environmental aesthetic.
+
+The application should look like a professional environmental technology startup product that could be demonstrated to government authorities, environmental experts, and hackathon judges.
+
+The interface should feel polished, original, and highly usable.
+
+---
+
+# 2. TECHNOLOGY STACK
+
+Use the following technologies wherever supported by the Google AI Studio environment.
+
+Frontend:
+- React
+- TypeScript
+- Vite or the environment's supported React framework
+- Tailwind CSS
+- shadcn/ui or equivalent reusable components
+- Lucide icons
+- Framer Motion for subtle animations
+- Recharts for analytical charts
+
+Mapping:
+- Leaflet with OpenStreetMap tiles
+- Heatmap visualization using Leaflet.heat or an equivalent heatmap layer
+- Interactive markers, clustering, filters, and map controls
+
+Backend:
+- Node.js with TypeScript
+- Express or an equivalent supported server framework
+- REST API architecture
+- Server-side Gemini API integration
+- Input validation and error handling
+
+Database:
+- Firebase Firestore or another persistent database supported by the environment.
+- Firebase Authentication or equivalent authentication system.
+- Persistent storage for incidents, users, reports, actions, notifications, and environmental observations.
+
+AI:
+- Google Gemini API.
+- Use server-side API calls.
+- Never expose the Gemini API key in frontend code.
+- Use structured JSON responses for AI analysis.
+- Validate AI-generated results before displaying them.
+
+If a requested technology is unsupported, choose a compatible alternative while preserving the required functionality.
+
+The application must run in the Google AI Studio preview environment.
+
+---
+
+# 3. VISUAL DESIGN SYSTEM — VERY IMPORTANT
+
+I do NOT want a dark-themed dashboard.
+
+Use a bright, fresh, premium environmental design.
+
+Color palette:
+
+Primary:
+- Forest Green: #167D4A
+- Emerald: #21A366
+- Mint: #DDF7E8
+
+Secondary:
+- Sky Blue: #45B8F0
+- Aqua: #DDF5FA
+- Soft Teal: #43C6AC
+
+Background:
+- Main background: #F7FBF8
+- Cards: #FFFFFF
+- Secondary background: #EDF7F1
+
+Accent:
+- Warm Yellow: #F6C453
+- Coral: #F07865
+- Lavender: #E9E7FF
+
+Typography:
+- Use Inter, Manrope, or Plus Jakarta Sans.
+- Strong headings.
+- Clean, readable body text.
+- Elegant numerical typography for statistics.
+
+Visual style:
+- White cards with soft shadows.
+- Rounded corners around 14–20px.
+- Spacious dashboard layouts.
+- Subtle gradients.
+- Bright green and blue data visualizations.
+- Modern side navigation.
+- Soft transitions.
+- Beautiful empty states.
+- Clean charts with readable labels.
+- Premium map overlays.
+
+Avoid:
+- Dark backgrounds.
+- Excessive neon colors.
+- Overly saturated dashboards.
+- Generic bootstrap templates.
+- Excessive glassmorphism.
+- Cluttered interfaces.
+- Fake buttons that do nothing.
+- Huge unnecessary gradients.
+
+The dashboard should feel similar in quality to Linear, Stripe, or a modern environmental analytics SaaS platform, but with its own distinctive environmental identity.
+
+---
+
+# 4. APPLICATION ARCHITECTURE
+
+Build two separate role-based dashboards:
+
+1. Citizen / User Dashboard
+2. Environmental Officer Dashboard
+
+Each dashboard must have:
+- Different navigation.
+- Different permissions.
+- Different widgets.
+- Different actions.
+- Different data views.
+- Different workflows.
+
+Implement authentication and role-based routing.
+
+Roles:
+- Citizen
+- Environmental Officer
+- Administrator
+
+Create a demo login system so judges can instantly access both dashboards.
+
+Demo credentials:
+
+Citizen:
+citizen@ecosentinel.demo
+
+Officer:
+officer@ecosentinel.demo
+
+Admin:
+admin@ecosentinel.demo
+
+For the prototype, provide a clearly labeled demo-login mode that works without requiring real email verification.
+
+If Firebase authentication is configured, use it. Otherwise implement a secure server-managed prototype session.
+
+Never make the demo login bypass server-side role checks.
+
+---
+
+# 5. LANDING PAGE
+
+Create an impressive public landing page.
+
+Hero section:
+
+Headline:
+"See the Risk. Understand the Impact. Take Action."
+
+Subtitle:
+"An intelligent environmental monitoring and compliance platform connecting citizens, data, and authorities to build a cleaner future."
+
+Buttons:
+- Report an Environmental Issue
+- Explore Environmental Intelligence
+
+Hero visual:
+Create an attractive environmental intelligence dashboard illustration showing:
+- Pollution monitoring.
+- A map with environmental hotspots.
+- AI risk analysis.
+- Incident tracking.
+- Compliance status.
+
+Additional landing page sections:
+
+A. Environmental Intelligence
+Explain how the system combines environmental observations, AI, and compliance requirements.
+
+B. How It Works
+1. Report an environmental concern.
+2. Analyze environmental evidence.
+3. Identify potential risks.
+4. Review applicable standards.
+5. Assign corrective action.
+6. Track resolution.
+
+C. Live Environmental Overview
+Show demo statistics:
+- Total incidents.
+- Active high-risk areas.
+- Reports resolved.
+- Environmental monitoring coverage.
+
+D. Features
+- AI-assisted environmental analysis.
+- Interactive pollution heatmaps.
+- Compliance intelligence.
+- Citizen reporting.
+- Officer investigation.
+- Predictive environmental insights.
+
+E. CTA
+"Every observation matters. Every action counts."
+
+All landing page buttons must work.
+
+---
+
+# 6. CITIZEN / USER DASHBOARD
+
+Create a completely separate dashboard for citizens.
+
+Dashboard title:
+"My Environmental Impact"
+
+Sidebar navigation:
+
+- Overview
+- Report an Issue
+- My Reports
+- Environmental Map
+- Notifications
+- Environmental Insights
+- Profile
+
+Overview dashboard:
+
+Display:
+- Reports submitted.
+- Reports under investigation.
+- Reports resolved.
+- Latest environmental alerts.
+- Nearby environmental incidents.
+- Personal reporting activity.
+
+Include a beautiful map showing incidents near the citizen.
+
+Use bright green and blue map elements.
+
+Provide a quick-action button:
+"Report Environmental Issue"
+
+## 6.1 Environmental Incident Reporting
+
+Create a detailed report submission form.
+
+Fields:
+
+- Incident title.
+- Pollution type.
+- Description.
+- Location.
+- Latitude and longitude.
+- Date and time.
+- Severity observed.
+- Environmental medium: air, water, soil, or noise.
+- Optional image upload.
+- Optional supporting document upload.
+- Contact preference.
+
+Pollution types:
+- Air pollution.
+- Water pollution.
+- Industrial emissions.
+- Waste dumping.
+- Noise pollution.
+- Soil contamination.
+- Chemical leakage.
+- Other.
+
+Features:
+- Allow map-based location selection.
+- Allow manual location entry.
+- Allow image uploads.
+- Show an image preview.
+- Validate required fields.
+- Display upload progress.
+- Submit to the backend.
+- Generate a unique incident ID.
+- Save the incident to the database.
+- Display a success confirmation.
+
+After submission, automatically trigger the AI environmental analysis workflow.
+
+Do not invent real-world evidence from an uploaded image.
+
+AI must distinguish between what is visible in the image and what cannot be confirmed.
+
+## 6.2 My Reports
+
+Display all reports submitted by the logged-in citizen.
+
+Use attractive cards or a table with:
+
+- Incident ID.
+- Incident type.
+- Location.
+- Submission date.
+- Risk classification.
+- Assigned department.
+- Current status.
+
+Status values:
+
+- Submitted
+- AI Analysis
+- Under Review
+- Investigation Assigned
+- Corrective Action
+- Resolved
+- Rejected
+
+Users must be able to:
+- Open an incident.
+- View AI analysis.
+- View officer updates.
+- View compliance findings.
+- View the complete incident timeline.
+- Add additional evidence.
+- Submit a follow-up comment.
+- Track resolution.
+
+Users must not be able to change official investigation findings.
+
+## 6.3 Environmental Insights
+
+Display personalized environmental information:
+
+- Nearby pollution incidents.
+- Local air-quality trends.
+- Water-quality observations.
+- Environmental risk alerts.
+- Historical trends.
+- Environmental safety recommendations.
+
+Clearly label simulated data.
+
+Do not present simulated environmental measurements as live official readings.
+
+---
+
+# 7. ENVIRONMENTAL OFFICER DASHBOARD
+
+This is the most important dashboard.
+
+Create a professional environmental intelligence command center.
+
+Dashboard title:
+"Environmental Operations Center"
+
+The officer should be able to investigate, analyze, prioritize, assign, and resolve incidents.
+
+Sidebar:
+
+- Command Center
+- Incident Management
+- Environmental Heatmap
+- AI Risk Intelligence
+- Compliance Intelligence
+- Predictive Analytics
+- Inspection Management
+- Corrective Actions
+- Reports & Exports
+- Settings
+
+Dashboard overview:
+
+Top KPI cards:
+- Total Active Incidents.
+- High-Risk Incidents.
+- Pending Inspections.
+- Compliance Concerns.
+- Resolved This Month.
+- Average Resolution Time.
+
+Include:
+- Incident trend chart.
+- Pollution type distribution.
+- Risk distribution.
+- Regional incident analysis.
+- Recent reports.
+- Pending officer actions.
+- AI-generated risk alerts.
+
+The dashboard must update when incidents are created, assigned, or resolved.
+
+---
+
+# 8. INTERACTIVE ENVIRONMENTAL HEATMAP
+
+Create a major feature called:
+
+"Environmental Risk Intelligence Map"
+
+This should be one of the most visually impressive features of the application.
+
+Use a large interactive map with a bright, clean design.
+
+Map layers:
+
+1. Air Pollution
+2. Water Pollution
+3. Industrial Emissions
+4. Waste Dumping
+5. Noise Pollution
+6. Overall Environmental Risk
+
+Use a heatmap layer to represent the density and intensity of environmental incidents.
+
+Color scheme:
+- Green: Low Risk
+- Yellow: Moderate Risk
+- Orange: High Risk
+- Red: Critical Risk
+
+Map functionality:
+
+- Zoom in and out.
+- Pan.
+- Switch between layers.
+- Filter by pollution type.
+- Filter by risk level.
+- Filter by date range.
+- Filter by incident status.
+- Search locations.
+- Display individual incident markers.
+- Cluster markers when zoomed out.
+- Show incident details when a marker is clicked.
+- Show a side panel with the selected incident.
+- Allow switching between heatmap and marker views.
+
+Heatmap data should be based on incident coordinates and risk scores.
+
+Use seeded demonstration data across Mumbai and surrounding areas.
+
+Include realistic example locations such as:
+- Vasai-Virar.
+- Mira-Bhayandar.
+- Thane.
+- Mumbai.
+- Navi Mumbai.
+- Industrial and coastal areas.
+
+Use realistic-looking but clearly labeled synthetic observations.
+
+Do not claim that these demo coordinates represent actual pollution measurements.
+
+Map analytics panel:
+
+- Highest-risk region.
+- Most frequently reported pollution type.
+- Incident density.
+- Number of active cases.
+- Risk concentration.
+- Emerging hotspots.
+
+Clicking a hotspot must reveal the incidents contributing to that hotspot.
+
+The map should be interactive, not a static screenshot.
+
+---
+
+# 9. AI ENVIRONMENTAL INTELLIGENCE ENGINE
+
+Build an AI analysis module powered by Gemini.
+
+It must analyze environmental incidents and return structured results.
+
+For each incident, analyze:
+
+1. Incident summary.
+2. Pollution category.
+3. Potential environmental impact.
+4. Risk classification.
+5. Confidence level.
+6. Supporting evidence.
+7. Missing information.
+8. Potential compliance concern.
+9. Recommended inspection.
+10. Suggested corrective action.
+
+Risk levels:
+
+- Low
+- Moderate
+- High
+- Critical
+
+Use a structured JSON response similar to:
+
+{
+  "incident_summary": "string",
+  "pollution_category": "string",
+  "risk_level": "Low | Moderate | High | Critical",
+  "risk_score": 0,
+  "confidence": 0,
+  "evidence": [],
+  "potential_impact": [],
+  "compliance_concerns": [],
+  "missing_information": [],
+  "recommended_inspection": [],
+  "suggested_actions": [],
+  "explanation": "string"
+}
+
+The AI must explain why it assigned a particular risk score.
+
+Do not let the AI arbitrarily invent measurements or regulatory limits.
+
+If the data is insufficient, the AI must clearly state that the conclusion is preliminary.
+
+All AI-generated findings must be labeled:
+
+"AI-Assisted Preliminary Assessment"
+
+The system must clearly state that final regulatory decisions require authorized human review.
+
+---
+
+# 10. ANOMALY DETECTION AND PREDICTIVE ANALYTICS
+
+Create an AI-powered environmental analytics module.
+
+Features:
+
+## 10.1 Anomaly Detection
+
+Detect unusual environmental observations.
+
+Example:
+If an air-quality reading suddenly increases compared to its historical baseline, flag it as an anomaly.
+
+Show:
+- Observed value.
+- Historical average.
+- Deviation percentage.
+- Anomaly score.
+- Potential explanation.
+- Recommended follow-up.
+
+Use actual mathematical anomaly detection on available numerical data.
+
+If sufficient historical data is available, implement a statistical method such as:
+- Z-score.
+- Moving average deviation.
+- Interquartile range.
+
+Use Gemini to explain the anomaly, not to fabricate the numerical calculation.
+
+## 10.2 Environmental Forecasting
+
+Build a predictive chart for:
+- Pollution levels.
+- Incident frequency.
+- Environmental risk trends.
+
+Show:
+- Historical data.
+- Forecasted values.
+- Confidence interval where available.
+- Forecast horizon.
+- Model limitations.
+
+Use a real statistical forecasting method such as moving averages, linear regression, or exponential smoothing.
+
+Clearly distinguish forecasted data from observed data.
+
+Do not use a fabricated forecast as an official environmental prediction.
+
+## 10.3 Trend Analysis
+
+Analyze:
+- Pollution trends.
+- Seasonal patterns.
+- Incident frequency.
+- High-risk areas.
+- Resolution performance.
+
+Add time-range filters:
+- 7 Days
+- 30 Days
+- 90 Days
+- 1 Year
+
+---
+
+# 11. COMPLIANCE INTELLIGENCE MODULE
+
+Create a module called:
+
+"Environmental Compliance Intelligence"
+
+This module should help officers compare environmental observations against applicable environmental requirements.
+
+Features:
+
+- Environmental standard library.
+- Standard search.
+- Pollution category filters.
+- Threshold comparison.
+- Compliance concern identification.
+- Evidence references.
+- Explainable findings.
+
+Create a compliance document library with:
+
+- Document title.
+- Issuing authority.
+- Applicable pollution category.
+- Jurisdiction.
+- Document date.
+- Reference URL.
+- Extracted threshold.
+- Measurement unit.
+- Applicability notes.
+
+For the prototype, use a curated demo library based on relevant environmental regulatory references.
+
+Possible reference categories:
+- Central Pollution Control Board.
+- Ministry of Environment, Forest and Climate Change.
+- National Ambient Air Quality Standards.
+- Relevant water-quality standards.
+- Applicable industrial emission requirements.
+
+IMPORTANT:
+
+Never invent a legal threshold or falsely cite a regulation.
+
+Every compliance record must contain:
+- Source name.
+- Document reference.
+- Applicable parameter.
+- Measurement unit.
+- Threshold.
+- Source URL or document reference.
+
+If an authoritative threshold cannot be verified, mark it as:
+
+"Reference Required — Human Verification Needed"
+
+Do not make a legal conclusion solely from AI.
+
+## Compliance Assessment Workflow
+
+1. Officer selects an incident.
+2. System identifies the relevant pollution category.
+3. System retrieves applicable standards from the compliance library.
+4. System compares available observations against thresholds.
+5. System highlights potential concerns.
+6. System displays the evidence and source reference.
+7. Officer reviews the result.
+8. Officer records an official internal assessment.
+
+Use clear visual statuses:
+
+- Within Reference Limit
+- Potential Exceedance
+- Insufficient Evidence
+- Requires Human Review
+
+---
+
+# 12. INCIDENT MANAGEMENT AND INVESTIGATION
+
+Create a full incident investigation workflow.
+
+Each incident should have a detailed page with:
+
+- Incident overview.
+- Reporter details.
+- Location map.
+- Environmental observations.
+- AI analysis.
+- Compliance assessment.
+- Uploaded evidence.
+- Assigned officer.
+- Investigation notes.
+- Corrective action.
+- Status timeline.
+
+Officer actions:
+
+- Assign incident.
+- Change priority.
+- Schedule inspection.
+- Add investigation notes.
+- Request additional evidence.
+- Upload inspection documents.
+- Record findings.
+- Create corrective action.
+- Update status.
+- Mark resolved.
+- Reopen incident.
+
+Each action must be recorded in an audit trail.
+
+The audit trail must include:
+- Action.
+- User.
+- Timestamp.
+- Previous state.
+- New state.
+- Notes.
+
+Use timestamps consistently and display them in local time.
+
+---
+
+# 13. INSPECTION MANAGEMENT
+
+Build an inspection module.
+
+Features:
+- Inspection calendar.
+- Inspection list.
+- Assigned officer.
+- Incident association.
+- Scheduled date.
+- Inspection location.
+- Checklist.
+- Inspection outcome.
+- Evidence upload.
+- Inspection notes.
+
+Inspection statuses:
+- Scheduled
+- In Progress
+- Completed
+- Cancelled
+
+Allow officers to create and update inspections.
+
+Create a printable inspection report.
+
+---
+
+# 14. CORRECTIVE ACTION TRACKER
+
+Create a dedicated corrective action management module.
+
+Each corrective action should contain:
+
+- Action ID.
+- Associated incident.
+- Responsible department.
+- Responsible party.
+- Action description.
+- Priority.
+- Due date.
+- Status.
+- Completion evidence.
+- Officer verification.
+
+Status:
+- Pending
+- In Progress
+- Completed
+- Verified
+- Overdue
+
+Include:
+- Progress bars.
+- Due-date alerts.
+- Overdue indicators.
+- Completion timeline.
+
+When an action is verified, update the incident timeline.
+
+---
+
+# 15. ANALYTICS AND DATA VISUALIZATION
+
+Create a comprehensive analytics dashboard.
+
+Include the following charts:
+
+1. Environmental Incident Trends — line chart.
+2. Pollution Type Distribution — donut chart.
+3. Regional Risk Distribution — bar chart.
+4. Incident Severity — stacked bar chart.
+5. Compliance Concern Distribution — donut chart.
+6. Resolution Performance — line chart.
+7. Incident Density by Region — heatmap.
+8. Monthly Incident Comparison — grouped bar chart.
+
+All charts must:
+- Use real database records or seeded demo data.
+- Support filters.
+- Have readable tooltips.
+- Update when filters change.
+- Use bright environmental colors.
+- Display meaningful legends.
+
+Add an analytics filter bar:
+- Date range.
+- Pollution category.
+- Risk level.
+- Region.
+- Status.
+
+Add export functionality:
+- CSV.
+- Printable PDF report.
+
+The report should include:
+- Selected filters.
+- Key statistics.
+- Chart summaries.
+- Incident references.
+- Report generation date.
+
+---
+
+# 16. AI CHAT ASSISTANT
+
+Create an environmental intelligence assistant called:
+
+"EcoGuide AI"
+
+This should be a real Gemini-powered chatbot.
+
+The assistant should answer questions such as:
+
+- Which region has the highest environmental risk?
+- What are the most common pollution incidents?
+- Why was this incident flagged?
+- Which incidents require immediate investigation?
+- What compliance reference applies to this observation?
+- What actions should the officer take next?
+- Show the incidents reported in the selected region.
+- Summarize this month's environmental trends.
+
+The assistant must use available application data as context.
+
+Implement:
+- Context-aware responses.
+- Data-grounded answers.
+- Source references where available.
+- Suggested questions.
+- Loading indicators.
+- Error handling.
+- Conversation history.
+
+Do not let the assistant fabricate database records, measurements, or regulations.
+
+If it does not have enough information, it must say so.
+
+---
+
+# 17. NOTIFICATIONS AND ALERTS
+
+Create a notification system.
+
+Citizen notifications:
+- Report submitted.
+- Officer assigned.
+- Additional evidence requested.
+- Investigation update.
+- Incident resolved.
+
+Officer notifications:
+- New high-risk incident.
+- Critical environmental alert.
+- Incident assigned.
+- Inspection due.
+- Corrective action overdue.
+- Potential compliance concern.
+
+Include:
+- Notification dropdown.
+- Unread count.
+- Mark as read.
+- Notification history.
+
+Notifications must be generated by actual application events.
+
+---
+
+# 18. BACKEND AND DATABASE REQUIREMENTS
+
+Implement the backend completely.
+
+Create database entities:
+
+User:
+- id
+- name
+- email
+- role
+- department
+- createdAt
+
+Incident:
+- id
+- title
+- description
+- category
+- pollutionType
+- location
+- latitude
+- longitude
+- reportedAt
+- riskScore
+- riskLevel
+- status
+- assignedOfficerId
+- reporterId
+- evidence
+- aiAnalysis
+
+EnvironmentalObservation:
+- id
+- incidentId
+- parameter
+- value
+- unit
+- observedAt
+- source
+- location
+
+ComplianceReference:
+- id
+- title
+- issuingAuthority
+- parameter
+- threshold
+- unit
+- sourceUrl
+- jurisdiction
+- applicability
+
+Inspection:
+- id
+- incidentId
+- assignedOfficerId
+- scheduledAt
+- status
+- findings
+- evidence
+
+CorrectiveAction:
+- id
+- incidentId
+- description
+- assignedTo
+- dueDate
+- status
+- verification
+
+Notification:
+- id
+- userId
+- message
+- type
+- read
+- createdAt
+
+AuditLog:
+- id
+- incidentId
+- actorId
+- action
+- previousState
+- newState
+- timestamp
+- notes
+
+Implement:
+- CRUD APIs.
+- Authentication.
+- Role-based authorization.
+- Data validation.
+- Error handling.
+- Pagination.
+- Search.
+- Filtering.
+- Database persistence.
+- File upload handling.
+- Audit logs.
+
+The frontend must call the backend APIs.
+
+Do not simulate database persistence using frontend-only state.
+
+Use server-side validation for all important operations.
+
+A citizen must only be able to view and modify their own permitted data.
+
+Officers must only access the incidents and administrative functions allowed by their role.
+
+---
+
+# 19. DEMO DATA AND SEEDING
+
+Create a realistic demonstration environment.
+
+Seed:
+- At least 40 environmental incidents.
+- At least 20 environmental observation records.
+- At least 10 compliance reference records.
+- At least 8 corrective actions.
+- At least 8 inspections.
+- At least 5 different pollution categories.
+- Different risk levels.
+- Different incident statuses.
+- Historical observations across multiple dates.
+
+Use geographically distributed synthetic data across Mumbai Metropolitan Region.
+
+Use deterministic seed data so the prototype is reproducible.
+
+Clearly mark synthetic data.
+
+The dashboard should not look empty on the first launch.
+
+Provide a "Reset Demo Data" function for the administrator.
+
+Do not require the user to manually create all demo data.
+
+---
+
+# 20. REQUIRED WORKING FEATURES
+
+The prototype must support these complete flows.
+
+FLOW A — CITIZEN REPORTING
+
+Citizen logs in
+→ Opens report form
+→ Selects location
+→ Adds incident details
+→ Uploads evidence
+→ Submits incident
+→ Backend saves incident
+→ AI analyzes incident
+→ Incident appears in citizen dashboard
+→ Officer receives notification.
+
+FLOW B — OFFICER INVESTIGATION
+
+Officer logs in
+→ Opens command center
+→ Sees new incident
+→ Opens incident details
+→ Reviews AI analysis
+→ Reviews compliance references
+→ Assigns inspection
+→ Records findings
+→ Creates corrective action
+→ Updates incident status
+→ Citizen sees progress.
+
+FLOW C — HEATMAP ANALYSIS
+
+Officer opens heatmap
+→ Selects pollution layer
+→ Applies date filter
+→ Selects risk level
+→ Heatmap updates
+→ Clicks hotspot
+→ Sees contributing incidents
+→ Opens incident details.
+
+FLOW D — COMPLIANCE ASSESSMENT
+
+Officer opens an incident
+→ Selects environmental observation
+→ System identifies a relevant reference
+→ Threshold comparison is performed
+→ Potential concern is displayed
+→ Source is visible
+→ Officer records assessment.
+
+FLOW E — CORRECTIVE ACTION
+
+Officer creates corrective action
+→ Sets priority and due date
+→ Action appears in tracker
+→ Action status is updated
+→ Officer uploads completion evidence
+→ Officer verifies action
+→ Incident timeline updates.
+
+FLOW F — ANALYTICS
+
+Officer applies filters
+→ Charts update
+→ Heatmap updates
+→ AI assistant answers questions using filtered data
+→ Officer exports a report.
+
+All flows must work using demo data without requiring external paid services.
+
+---
+
+# 21. RESPONSIVE DESIGN
+
+The application must work on:
+
+- Desktop.
+- Laptop.
+- Tablet.
+- Mobile.
+
+Desktop:
+- Full sidebar.
+- Large analytics panels.
+- Full map view.
+
+Mobile:
+- Collapsible navigation.
+- Responsive cards.
+- Stacked charts.
+- Mobile-friendly forms.
+- Map controls adapted to small screens.
+
+Maintain the bright visual design on every screen.
+
+---
+
+# 22. IMPLEMENTATION REQUIREMENTS
+
+Build the complete project, not just a code explanation.
+
+Before finishing:
+
+1. Create all frontend pages.
+2. Create reusable UI components.
+3. Implement backend APIs.
+4. Configure database persistence.
+5. Implement authentication.
+6. Implement role-based authorization.
+7. Integrate Gemini.
+8. Implement heatmap functionality.
+9. Implement analytical charts.
+10. Seed demo data.
+11. Implement incident workflows.
+12. Test all important interactions.
+13. Fix runtime errors.
+14. Fix TypeScript errors.
+15. Ensure the application runs in the preview.
+
+Do not leave buttons nonfunctional.
+
+Do not leave forms without submit handlers.
+
+Do not hardcode dashboard statistics that fail to update when records change.
+
+Do not create dead-end pages.
+
+Do not use placeholder lorem ipsum content.
+
+If a feature requires an external API key, create a graceful fallback mode with seeded data and clearly labeled demo functionality.
+
+---
+
+# 23. FINAL PRODUCT EXPECTATION
+
+The final application should demonstrate:
+
+- A stunning, bright environmental SaaS interface.
+- Separate citizen and officer dashboards.
+- A fully interactive environmental heatmap.
+- AI-powered incident analysis.
+- Anomaly detection.
+- Predictive environmental insights.
+- Compliance intelligence.
+- Complete incident investigation workflow.
+- Corrective action tracking.
+- Notifications.
+- Database persistence.
+- Analytics.
+- AI chatbot.
+- Exportable reports.
+
+The most impressive features should be:
+
+1. Environmental Risk Intelligence Map.
+2. AI Environmental Analysis.
+3. Compliance Intelligence.
+4. Officer Command Center.
+5. End-to-End Incident Lifecycle.
+
+Make the experience visually impressive enough for a hackathon presentation, but ensure the underlying workflows are functional.
+
+The goal is to demonstrate how environmental observations become evidence-backed intelligence, how intelligence becomes an investigation, and how an investigation becomes a trackable corrective action.
+
+Build EcoSentinel as a complete working full-stack prototype.
+
+Start implementing the application now. Do not respond with a plan or tutorial. Create the actual application and its files.

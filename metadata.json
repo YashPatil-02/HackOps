@@ -1,0 +1,6 @@
+{
+  "name": "EcoSentinel",
+  "description": "Environmental Intelligence & Compliance Management System connecting citizen reporting, AI risk analysis, regulatory compliance, and incident response.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
